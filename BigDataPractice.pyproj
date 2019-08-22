@@ -29,6 +29,9 @@
     <Compile Include="Hive.py" />
     <Compile Include="Python.py" />
     <Compile Include="Spark.py" />
+    <Compile Include="SparkRDD.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SparkSql.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
