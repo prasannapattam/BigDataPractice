@@ -60,11 +60,13 @@ airport_freq.filter(airport_freq.airport_ident == "KLAX") \
 
 # select * from airports where type in ('heliport', 'balloonport')	
 airports.filter(airports.type.isin(["heliport", "balloonport"])) \
-    .select(airports.id, airports.ident, airports.type).show(10)
+    .select(airports.id, airports.ident, airports.type) \
+    .show(10)
 
 # select * from airports where type not in ('heliport', 'balloonport')	
 airports.filter(~airports.type.isin(["heliport", "balloonport"])) \
-    .select(airports.id, airports.ident, airports.type).show(10)
+    .select(airports.id, airports.ident, airports.type) \
+    .show(10)
 
 """
 --- GROUP BY, COUNT, ORDER BY

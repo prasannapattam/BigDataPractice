@@ -56,8 +56,66 @@ airport_freq.filter(lambda row: row.airport_ident == "KLAX") \
 
 # select * from airports where type in ('heliport', 'balloonport')	
 airports.filter(lambda row: row.type in (["heliport", "balloonport"])) \
-    .map(lambda row: Row(id=row.id, ident=row.ident, type= row.type)).take(10)
+    .map(lambda row: Row(id=row.id, ident=row.ident, type= row.type)) \
+    .take(10)
+
 
 # select * from airports where type not in ('heliport', 'balloonport')	
-airports.filter(~airports.type.isin(["heliport", "balloonport"])) \
-    .select(airports.id, airports.ident, airports.type).show(10)
+airports.filter(lambda row: row.type not in (["heliport", "balloonport"])) \
+    .map(lambda row: Row(id=row.id, ident=row.ident, type=row.type)) \
+    .take(10)
+
+"""
+--- GROUP BY, COUNT, ORDER BY
+"""
+# select iso_country, type, count(*) from airports group by iso_country, type order by iso_country, type	
+airports.map(lambda row: ((row.iso_country, row.type), 1)) \
+    .reduceByKey(lambda accum, curr: accum + curr) \
+    .take(10)
+
+# select iso_country, type, count(*) from airports group by iso_country, type order by iso_country, count(*) desc	
+airports.map(lambda row: ((row.iso_country, row.type), 1)) \
+    .reduceByKey(lambda accum, curr: accum + curr) \
+    .sortBy(lambda row: row[1], ascending=False) \
+    .take(10)
+
+"""
+-- HAVING and WHERE
+"""
+# select type, count(*) from airports where iso_country = 'US' group by type having count(*) > 1000 order by count(*) desc	
+airports.filter(lambda row: row.iso_country == "US") \
+    .map(lambda row: (row.type, 1)) \
+    .reduceByKey(lambda accum, curr: accum + curr) \
+    .filter(lambda row: row[1] > 1000) \
+    .sortBy(lambda row: row[1], ascending=False) \
+    .take(10)
+
+"""
+-- Top N records
+"""
+# select iso_country, count(*) from airports group by iso_country order by count(*) desc limit 10	
+airports.map(lambda row: (row.iso_country, 1)) \
+    .reduceByKey(lambda accum, curr: accum + curr) \
+    .sortBy(lambda row: row[1], ascending=False) \
+    .take(10)
+
+
+# select iso_country, count(*) from airports group by iso_country order by count(*) desc limit 10 offset 10
+airports.map(lambda row: (row.iso_country, 1)) \
+    .reduceByKey(lambda accum, curr: accum + curr) \
+    .sortBy(lambda row: row[1], ascending=False) \
+    .rangeBetween(10, 15) \
+    .take(20)
+
+
+"""
+# -- Aggregate functions (MIN, MAX, AVG)
+"""
+# select min(elevation_ft), max(elevation_ft), avg(elevation_ft) from airports	
+# airports.agg({"elevation_ft": { "Max": np.max, "Min": np.min, "Avg": np.mean }}).T
+
+airports.map(lambda row: row.elevation_ft if row.elevation_ft else 0) \
+    .map(lambda key: (key, key, key, 1)) \
+    .reduce(lambda accu, curr: (max(accu[0], curr[0]), min(accu[1], curr[1]), accu[2] + curr[2], accu[3] + curr[3])) \
+    .take(10)
+
