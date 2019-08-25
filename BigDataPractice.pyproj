@@ -26,6 +26,9 @@
     <Content Include="airports.csv" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HBasePhoenix.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Hive.py" />
     <Compile Include="Python.py" />
     <Compile Include="Spark.py" />

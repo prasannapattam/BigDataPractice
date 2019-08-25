@@ -84,7 +84,7 @@ DROP TABLE airport_freq_csv
 select * from airports limit 3
 
 # select id from airports where ident = 'KLAX'	
-select id from airports_csv where ident = 'KLAX'
+select id from airports where ident = 'KLAX'
 
 # select distinct type from airports	
 select distinct type from airports
