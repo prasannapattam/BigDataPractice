@@ -115,7 +115,16 @@ airports.map(lambda row: (row.iso_country, 1)) \
 # airports.agg({"elevation_ft": { "Max": np.max, "Min": np.min, "Avg": np.mean }}).T
 
 airports.map(lambda row: row.elevation_ft if row.elevation_ft else 0) \
-    .map(lambda key: (key, key, key, 1)) \
-    .reduce(lambda accu, curr: (max(accu[0], curr[0]), min(accu[1], curr[1]), accu[2] + curr[2], accu[3] + curr[3])) \
-    .take(10)
+    .map(lambda key: (key, key, key, 1, 1)) \
+    .reduce(lambda accu, curr: (max(accu[0], curr[0]), min(accu[1], \
+        curr[1]), accu[2] + curr[2], accu[3] + curr[3], (accu[2] + curr[2])/(accu[3] + curr[3])))
+
+"""
+-- JOIN
+"""
+# select airport_ident, airport_freq.type, description, frequency_mhz from airport_freq join airports on airport_freq.airport_ref = airports.id where airports.ident = 'KLAX'	
+airport_freq.map(lambda row: (row.airport_ref, (row.airport_ident, row.type, row.description, row.frequency_mhz))) \
+    .join(airports.map(lambda row: (row.id, row.ident))) \
+    .filter(lambda x: x[1][1] == "KLAX") \
+    .collect()
 
