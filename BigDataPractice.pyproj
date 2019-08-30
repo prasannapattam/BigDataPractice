@@ -30,6 +30,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Hive.py" />
+    <Compile Include="Pig.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Python.py" />
     <Compile Include="Spark.py" />
     <Compile Include="SparkRDD.py">
