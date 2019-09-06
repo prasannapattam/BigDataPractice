@@ -30,6 +30,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Hive.py" />
+    <Compile Include="NiFiFlowFile.py" />
     <Compile Include="Pig.py">
       <SubType>Code</SubType>
     </Compile>
